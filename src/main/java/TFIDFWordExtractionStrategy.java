@@ -1,5 +1,4 @@
 import org.jsoup.nodes.Document;
-
 import java.util.*;
 
 public class TFIDFWordExtractionStrategy implements ExtractionStrategy {
@@ -19,16 +18,25 @@ public class TFIDFWordExtractionStrategy implements ExtractionStrategy {
         String[] tokens = text.split("\\W+");
         Map<String, Integer> tfMap = new HashMap<>();
         Set<String> uniqueWords = new HashSet<>();
+        int totalWords = 0;
 
+        // Compute raw TF and total word count
         for (String token : tokens) {
             String word = token.toLowerCase();
             if (!word.isEmpty() && !STOP_WORDS.contains(word)) {
                 tfMap.put(word, tfMap.getOrDefault(word, 0) + 1);
                 uniqueWords.add(word);
+                totalWords++;
             }
         }
 
         if (!tfMap.isEmpty()) {
+            // Normalize TF by total words in the document
+            for (String word : tfMap.keySet()) {
+                double normalizedTF = (double) tfMap.get(word) / totalWords;
+                tfMap.put(word, (int) Math.round(normalizedTF * 1000));  // Store normalized TF scaled by 1000
+            }
+
             allDocuments.add(tfMap);
             totalDocs++;
 
@@ -49,9 +57,11 @@ public class TFIDFWordExtractionStrategy implements ExtractionStrategy {
 
         // Compute TF-IDF for each word
         for (String word : tfMap.keySet()) {
-            int tf = tfMap.get(word);  // Term Frequency in the document
+            double tf = (double) tfMap.get(word) / 1000;  // Retrieve normalized TF
             int df = dfMap.getOrDefault(word, 1);  // Document Frequency for the word
-            double idf = Math.log((double) totalDocs / df);  // Inverse Document Frequency
+
+            // Smoothed IDF to handle zero DF cases and avoid log(0)
+            double idf = Math.log10((double) (totalDocs + 1) / (df + 1)) + 1;
             double tfidf = tf * idf;  // TF-IDF score
             tfidfMap.put(word, tfidf);
         }
