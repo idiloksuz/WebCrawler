@@ -9,7 +9,7 @@ public class TFIDFWordExtractionStrategy implements ExtractionStrategy {
     // Define a set of stop words to exclude from TF-IDF computation
     private static final Set<String> STOP_WORDS = new HashSet<>(Arrays.asList(
             "the", "is", "in", "at", "of", "and", "a", "to", "it", "for", "on", "with", "as", "by", "an", "be",
-            "this","that","or","s","was","from","about"
+            "this","that","or","s","was","from","about","are","other"
     ));
 
     // Extract words and compute TF for each document
@@ -24,7 +24,7 @@ public class TFIDFWordExtractionStrategy implements ExtractionStrategy {
         // Compute raw TF and total word count
         for (String token : tokens) {
             String word = token.toLowerCase();
-            if (!word.isEmpty() && !STOP_WORDS.contains(word)) {
+            if (!word.isEmpty() && !STOP_WORDS.contains(word) && !word.matches("\\d+")) {  // Exclude numbers
                 tfMap.put(word, tfMap.getOrDefault(word, 0) + 1);
                 uniqueWords.add(word);
                 totalWords++;
