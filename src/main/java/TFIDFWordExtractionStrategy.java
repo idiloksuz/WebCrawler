@@ -8,7 +8,8 @@ public class TFIDFWordExtractionStrategy implements ExtractionStrategy {
 
     // Define a set of stop words to exclude from TF-IDF computation
     private static final Set<String> STOP_WORDS = new HashSet<>(Arrays.asList(
-            "the", "is", "in", "at", "of", "and", "a", "to", "it", "for", "on", "with", "as", "by", "an", "be"
+            "the", "is", "in", "at", "of", "and", "a", "to", "it", "for", "on", "with", "as", "by", "an", "be",
+            "this","that","or","s","was","from","about"
     ));
 
     // Extract words and compute TF for each document
@@ -73,7 +74,7 @@ public class TFIDFWordExtractionStrategy implements ExtractionStrategy {
         // Print the URL and the top 20 words with the highest TF-IDF scores
         System.out.println("\nTop TF-IDF words for: " + url);
         sortedWords.stream().limit(20).forEach(entry ->
-                System.out.println(entry.getKey() + ": " + String.format("%.4f", entry.getValue()))
+                System.out.println(entry.getKey())
         );
     }
 }

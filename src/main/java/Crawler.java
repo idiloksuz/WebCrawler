@@ -33,7 +33,6 @@ public class Crawler {
      */
     private static Document retrieveHTML(String url) {
         try {
-            // Add a User-Agent to prevent getting blocked
             return Jsoup.connect(url).get();
         } catch (IOException e) {
             System.err.println("Unable to fetch HTML of: " + url + " (" + e.getMessage() + ")");
@@ -60,12 +59,12 @@ public class Crawler {
     private static void crawl(String url, int step) {
         if (System.currentTimeMillis() - startTime >= timeFrame) {
             System.out.println("Time limit reached. Stopping crawl.");
-            return;
+            System.exit(0);
         }
 
-        if (step >= maxStep) {
-            return;
-        }
+//        if (step >= maxStep) {
+//            return;
+//        }
 
         url = normalizeUrl(url);
         if (visitedUrls.contains(url)) {
@@ -84,7 +83,7 @@ public class Crawler {
             Elements links = doc.select("a[href]");
             for (Element link : links) {
                 String nextUrl = normalizeUrl(link.absUrl("href"));
-                if (!nextUrl.isEmpty() && !visitedUrls.contains(nextUrl) && nextUrl.startsWith("https://en.wikipedia.org")) {
+                if (!nextUrl.isEmpty() && !visitedUrls.contains(nextUrl)) {
                     // Delay to avoid overwhelming the server
                     try {
                         Thread.sleep(requestDelay);
