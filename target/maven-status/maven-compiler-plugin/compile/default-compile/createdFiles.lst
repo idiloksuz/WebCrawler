@@ -1,0 +1,5 @@
+CrawlingStrategy.class
+CrawlingStrategyFactory.class
+Crawler.class
+WordFreqCrawlingStrategy.class
+TFIDFCrawlingStrategy.class
